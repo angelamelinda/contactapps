@@ -4,6 +4,13 @@ import { connect } from "react-redux";
 import { getAllContact } from "../../redux/actions/contact";
 import Loading from "../../components/Loading";
 import { LoadingWrapper } from "../../components/Loading/styled";
+import Contact from "../../components/Contact";
+import { Link } from "react-router-dom";
+import {
+  HeaderTitleWrapper,
+  HeaderTitle,
+  HeaderAddContactAction
+} from "../../styled/App";
 
 interface IListContact {
   state: IAppState;
@@ -15,15 +22,25 @@ class ListContact extends PureComponent<IListContact> {
     const { getAllContact } = this.props;
     getAllContact();
   }
-
   render() {
     const { error } = this.props.state.commonReducer;
     const { contacts } = this.props.state.contactReducer;
 
     if (contacts) {
-      return contacts.map(contact => {
-        return contact.firstName;
-      });
+      return (
+        <>
+          <HeaderTitleWrapper>
+            <HeaderTitle>All Contact</HeaderTitle>
+            <Link to="/new" className="text-decoration__none">
+              <HeaderAddContactAction>+</HeaderAddContactAction>
+            </Link>
+          </HeaderTitleWrapper>
+
+          {contacts.map(contact => {
+            return <Contact key={contact.id} contact={contact} />;
+          })}
+        </>
+      );
     }
 
     if (error) {

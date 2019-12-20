@@ -16,7 +16,9 @@ export const URL_API = {
 export const COLOR = {
   WHITE: "FFF",
   BLACK: "000",
-  PRIMARY: "03ABE9"
+  PRIMARY: "03ABE9",
+  GREY: "EFEFEF",
+  GREEEN: "6bcc45"
 };
 
 export const DEFAULT_ERROR = "Sorry, something went wrong!";
