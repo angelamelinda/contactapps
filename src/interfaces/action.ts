@@ -1,13 +1,16 @@
 import { Action } from "redux";
-import { IContact, IContactDetail } from ".";
+import { IContactDetail, IErrorValidation } from ".";
 
 export enum E_CONTACT_ACTION {
   CONTACT_SET_CONTACT = "CONTACT_SET_CONTACT",
   CONTACT_SET_ALL_CONTACT = "CONTACT_SET_ALL_CONTACT",
-  CONTACT_ADD_NEW_CONTACT = "CONTACT_ADD_NEW_CONTACT",
-  CONTACT_UPDATE_CONTACT = "CONTACT_UPDATE_CONTACT",
-  CONTACT_DELETE_CONTACT = "CONTACT_DELETE_CONTACT",
-  CONTACT_SET_FORM = "CONTACT_SET_FORM"
+  CONTACT_SET_FORM = "CONTACT_SET_FORM",
+  CONTACT_SET_ERROR = "CONTACT_SET_ERROR",
+  CONTACT_RESET = "CONTACT_RESET"
+}
+
+export interface IContactSetError {
+  errorValidation: IErrorValidation;
 }
 
 export interface IContactSetContact {
@@ -18,28 +21,17 @@ export interface IContactSetAllContact {
   contacts: IContactDetail[];
 }
 
-export interface IContactAddNewContact extends IContact {}
-
-export interface IContactUpdateContact extends IContact {
-  index: number;
-}
-
-export interface IContactDeleteContact {
-  id: string;
-}
-
 export interface IContactSetForm {
   key: string;
   value: number | string;
 }
 
 export type TContactAction =
+  | IContactSetError
   | IContactSetContact
   | IContactSetAllContact
-  | IContactAddNewContact
-  | IContactUpdateContact
-  | IContactDeleteContact
-  | IContactSetForm;
+  | IContactSetForm
+  | IResetContact;
 
 export interface IContactAction extends Action<E_CONTACT_ACTION> {
   payload: TContactAction;
@@ -49,6 +41,8 @@ export enum E_COMMON_ACTION {
   COMMON_SET_LOADING = "COMMON_SET_LOADING",
   COMMON_SET_ERROR = "COMMON_SET_ERROR"
 }
+
+export interface IResetContact {}
 
 export interface ICommonSetLoading {
   isLoading: boolean;

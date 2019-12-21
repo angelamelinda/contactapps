@@ -30,7 +30,7 @@ export const Container = styled.div`
   width: 100%;
   margin: 0 auto;
   max-width: 600px;
-  height: 100%;
+  min-height: 100vh;
   background: #${COLOR.WHITE};
   padding: 10px;
 `;
@@ -55,6 +55,12 @@ export const HeaderAddContactAction = styled.div`
   width: 30px;
   line-height: 1;
   color: #${COLOR.PRIMARY};
+  cursor: pointer;
+`;
+
+export const HeaderBackButton = styled.div`
+  display: inline-block;
+  margin-right: 10px;
   cursor: pointer;
 `;
 

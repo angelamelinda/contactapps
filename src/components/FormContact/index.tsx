@@ -3,15 +3,35 @@ import { IContactDetail } from "../../interfaces";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { IAppState } from "../../interfaces/state";
-import { HeaderTitleWrapper, HeaderTitle, Row, Col } from "../../styled/App";
-import { FormContactSaveButton, FormContactDeleteButton } from "./styled";
+import {
+  HeaderTitleWrapper,
+  HeaderTitle,
+  Row,
+  Col,
+  HeaderBackButton
+} from "../../styled/App";
+import {
+  FormContactSaveButton,
+  FormContactDeleteButton,
+  Form,
+  FormField,
+  FormImage
+} from "./styled";
 import {
   getContact,
   setForm,
   deleteContact,
-  createContact
+  validateContact,
+  setContact,
+  resetContact
 } from "../../redux/actions/contact";
 import { History } from "history";
+import { LoadingWrapper } from "../Loading/styled";
+import Loading from "../Loading";
+import InputWithValidation from "../InputWithValidation";
+import { helpers } from "../../helpers";
+import BackButton from "../BackButton";
+import { COLOR } from "../../constants";
 
 interface IFormContactRoute {
   id: string;
@@ -21,28 +41,45 @@ interface IFormContact extends RouteComponentProps<IFormContactRoute> {
   state: IAppState;
   getContact: (id: string) => void;
   setForm: (key: string, value: string | number) => void;
-  deleteContact: (id: string) => void;
-  createContact: (data: IContactDetail, history: History) => void;
+  deleteContact: (id: string, history: History) => void;
+  validateContact: (
+    isNew: boolean,
+    id: string,
+    data: IContactDetail,
+    history: History
+  ) => void;
+  setContact: (contact: IContactDetail) => void;
+  resetContact: () => void;
 }
 
 class FormContact extends PureComponent<IFormContact> {
   private contactId: string;
+  private isNew: boolean;
 
   constructor(props: IFormContact) {
     super(props);
     this.contactId = props.match.params.id;
+    this.isNew = this.isNewContact();
   }
 
   componentDidMount() {
-    if (!this.isNewCampaign()) {
+    const { resetContact } = this.props;
+    resetContact();
+
+    if (!this.isNew) {
       const { getContact } = this.props;
       getContact(this.contactId);
     }
   }
 
-  isNewCampaign = () => {
+  isNewContact = () => {
     const { location } = this.props;
     return location.pathname.endsWith("/new");
+  };
+
+  handleBack = () => {
+    const { history } = this.props;
+    history.goBack();
   };
 
   handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -53,12 +90,12 @@ class FormContact extends PureComponent<IFormContact> {
   };
 
   handleDelete = () => {
-    const { deleteContact } = this.props;
-    deleteContact(this.contactId);
+    const { deleteContact, history } = this.props;
+    deleteContact(this.contactId, history);
   };
 
   handleSave = () => {
-    const { state, createContact, history } = this.props;
+    const { state, validateContact, history } = this.props;
     const {
       firstName,
       lastName,
@@ -71,13 +108,12 @@ class FormContact extends PureComponent<IFormContact> {
       age,
       photo
     };
-    if (this.isNewCampaign()) {
-      createContact(data, history);
-    }
+
+    validateContact(this.isNew, this.contactId, data, history);
   };
 
   renderButton = () => {
-    if (this.isNewCampaign()) {
+    if (this.isNew) {
       return (
         <Row>
           <Col>
@@ -97,76 +133,90 @@ class FormContact extends PureComponent<IFormContact> {
           </FormContactDeleteButton>
         </Col>
         <Col>
-          <FormContactSaveButton>Save</FormContactSaveButton>
+          <FormContactSaveButton onClick={this.handleSave}>
+            Save
+          </FormContactSaveButton>
         </Col>
       </Row>
     );
   };
 
   renderForm = () => {
-    const {
-      firstName,
-      lastName,
-      age,
-      photo
-    } = this.props.state.contactReducer.contactForm;
+    const { errorValidation, contactForm } = this.props.state.contactReducer;
+    const { firstName, lastName, age, photo } = contactForm;
+
     return (
-      <Row>
-        <Col>
-          <input
+      <Form>
+        <FormImage>
+          {helpers.isUrl(photo) && <img src={photo} alt="" />}
+        </FormImage>
+        <FormField>
+          <InputWithValidation
+            label="First Name"
             type="text"
-            className="w-100"
-            placeholder="First Name"
             value={firstName}
             name="firstName"
-            onChange={this.handleChange}
+            change={this.handleChange}
+            error={errorValidation ? errorValidation.firstName : ""}
           />
-        </Col>
-        <Col>
-          <input
+        </FormField>
+        <FormField>
+          <InputWithValidation
+            label="Last Name"
             type="text"
-            className="w-100"
-            placeholder="Last Name"
-            name="lastName"
             value={lastName}
-            onChange={this.handleChange}
+            name="lastName"
+            change={this.handleChange}
+            error={errorValidation ? errorValidation.lastName : ""}
           />
-        </Col>
-        <div className="w-100"></div>
-        <Col>
-          <input
-            type="number"
-            className="w-100"
-            placeholder="Age"
+        </FormField>
+        <FormField>
+          <InputWithValidation
+            label="Age"
+            type="text"
             value={age}
             name="age"
-            onChange={this.handleChange}
+            change={this.handleChange}
+            error={errorValidation ? errorValidation.age : ""}
           />
-        </Col>
-        <Col>
-          <input
+        </FormField>
+        <FormField>
+          <InputWithValidation
+            label="Photo"
             type="text"
-            className="w-100"
-            name="photo"
-            placeholder="Photo"
             value={photo}
-            onChange={this.handleChange}
+            name="photo"
+            change={this.handleChange}
+            error={errorValidation ? errorValidation.photo : ""}
           />
-        </Col>
-        <div className="w-100"></div>
-      </Row>
+        </FormField>
+      </Form>
     );
   };
 
   render() {
+    const { isLoading } = this.props.state.commonReducer;
+    if (this.isNew || !isLoading) {
+      return (
+        <>
+          <HeaderTitleWrapper>
+            <HeaderTitle>
+              <HeaderBackButton onClick={this.handleBack}>
+                <BackButton color={COLOR.PRIMARY} width={"18"} height={"18"} />
+              </HeaderBackButton>
+              Form Contact
+            </HeaderTitle>
+          </HeaderTitleWrapper>
+          {this.renderForm()}
+          {this.renderButton()}
+        </>
+      );
+    }
+
     return (
-      <>
-        <HeaderTitleWrapper>
-          <HeaderTitle>Form Contact</HeaderTitle>
-        </HeaderTitleWrapper>
-        {this.renderForm()}
-        {this.renderButton()}
-      </>
+      <LoadingWrapper>
+        <Loading />
+      </LoadingWrapper>
     );
   }
 }
@@ -177,7 +227,9 @@ const mapDispatchToProps = {
   getContact,
   setForm,
   deleteContact,
-  createContact
+  validateContact,
+  setContact,
+  resetContact
 };
 
 export default connect(

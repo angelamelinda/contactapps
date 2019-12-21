@@ -2,12 +2,10 @@ import { IContactState } from "../../interfaces/state";
 import {
   IContactAction,
   E_CONTACT_ACTION,
-  IContactAddNewContact,
   IContactSetAllContact,
-  IContactDeleteContact,
-  IContactUpdateContact,
   IContactSetForm,
-  IContactSetContact
+  IContactSetContact,
+  IContactSetError
 } from "../../interfaces/action";
 
 const INITIAL_STATE: IContactState = {
@@ -16,9 +14,10 @@ const INITIAL_STATE: IContactState = {
     id: "",
     firstName: "",
     lastName: "",
-    age: 0,
+    age: 1,
     photo: ""
-  }
+  },
+  errorValidation: null
 };
 
 function contactReducer(
@@ -34,46 +33,16 @@ function contactReducer(
       const { contact } = action.payload as IContactSetContact;
       return { ...state, contactForm: contact };
 
-    case E_CONTACT_ACTION.CONTACT_ADD_NEW_CONTACT:
-      const { contact: newContact } = action.payload as IContactAddNewContact;
-
-      if (state.contacts) {
-        return { ...state, contacts: [...state.contacts, newContact] };
-      }
-
-      return { ...state, contacts: [newContact] };
-
-    case E_CONTACT_ACTION.CONTACT_DELETE_CONTACT:
-      const { id } = action.payload as IContactDeleteContact;
-      if (state.contacts) {
-        return {
-          ...state,
-          contacts: state.contacts.filter(contact => contact.id !== id)
-        };
-      }
-      return state;
-
-    case E_CONTACT_ACTION.CONTACT_UPDATE_CONTACT:
-      const {
-        contact: updateContact
-      } = action.payload as IContactUpdateContact;
-      if (state.contacts) {
-        const index = state.contacts.findIndex(
-          contact => contact.id === updateContact.id
-        );
-        const updatedContacts = [...state.contacts];
-        updatedContacts[index] = updateContact;
-        return {
-          ...state,
-          contacts: updatedContacts
-        };
-      }
-      return state;
-
     case E_CONTACT_ACTION.CONTACT_SET_FORM:
       const { key, value } = action.payload as IContactSetForm;
-      console.log(key, value);
       return { ...state, contactForm: { ...state.contactForm, [key]: value } };
+
+    case E_CONTACT_ACTION.CONTACT_SET_ERROR:
+      const { errorValidation } = action.payload as IContactSetError;
+      return { ...state, errorValidation };
+
+    case E_CONTACT_ACTION.CONTACT_RESET:
+      return { ...INITIAL_STATE };
   }
   return state;
 }

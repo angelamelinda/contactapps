@@ -6,6 +6,13 @@ export interface IContactDetail {
   photo: string;
 }
 
+export interface IErrorValidation {
+  firstName: string;
+  lastName: string;
+  age: string;
+  photo: string;
+}
+
 export interface IContact {
   contact: IContactDetail;
 }

@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { IAppState } from "../../interfaces/state";
 import { connect } from "react-redux";
-import { getAllContact } from "../../redux/actions/contact";
+import { getAllContact, resetContact } from "../../redux/actions/contact";
 import Loading from "../../components/Loading";
 import { LoadingWrapper } from "../../components/Loading/styled";
 import Contact from "../../components/Contact";
@@ -15,13 +15,16 @@ import {
 interface IListContact {
   state: IAppState;
   getAllContact: () => void;
+  resetContact: () => void;
 }
 
 class ListContact extends PureComponent<IListContact> {
   componentDidMount() {
-    const { getAllContact } = this.props;
+    const { getAllContact, resetContact } = this.props;
+    resetContact();
     getAllContact();
   }
+
   render() {
     const { error } = this.props.state.commonReducer;
     const { contacts } = this.props.state.contactReducer;
@@ -57,7 +60,8 @@ class ListContact extends PureComponent<IListContact> {
 const mapStateToProps = (state: IAppState) => ({ state });
 
 const mapDispatchToProps = {
-  getAllContact
+  getAllContact,
+  resetContact
 };
 
 export default connect(

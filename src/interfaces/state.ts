@@ -1,8 +1,9 @@
-import { IContactDetail, IError } from ".";
+import { IContactDetail, IError, IErrorValidation } from ".";
 
 export interface IContactState {
   contacts: IContactDetail[] | null;
   contactForm: IContactDetail;
+  errorValidation: IErrorValidation | null;
 }
 
 export interface IResponse {

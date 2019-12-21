@@ -1,5 +1,9 @@
 import { URL_API, DEFAULT_ERROR } from "../../constants";
-import { IApiRequest, IContactDetail } from "../../interfaces";
+import {
+  IApiRequest,
+  IContactDetail,
+  IErrorValidation
+} from "../../interfaces";
 import { services } from "../../helpers/services";
 import { ThunkAction } from "redux-thunk";
 import { IAppState } from "../../interfaces/state";
@@ -10,11 +14,19 @@ import {
 } from "../../interfaces/action";
 import { setError, setLoading } from "./common";
 import { History } from "history";
+import { validate } from "../../helpers/validate";
 
 export function setAllGetData(contacts: IContactDetail[]): IContactAction {
   return {
     type: E_CONTACT_ACTION.CONTACT_SET_ALL_CONTACT,
     payload: { contacts }
+  };
+}
+
+export function resetContact(): IContactAction {
+  return {
+    type: E_CONTACT_ACTION.CONTACT_RESET,
+    payload: {}
   };
 }
 
@@ -32,31 +44,50 @@ export function setForm(key: string, value: number | string): IContactAction {
   };
 }
 
-export function createContact(
+export function setErrorValidation(
+  errorValidation: IErrorValidation
+): IContactAction {
+  return {
+    type: E_CONTACT_ACTION.CONTACT_SET_ERROR,
+    payload: { errorValidation }
+  };
+}
+
+export function validateContact(
+  isNew: boolean,
+  id: string,
   data: IContactDetail,
   history: History
 ): ThunkAction<void, IAppState, {}, TAllAction> {
   return dispatch => {
-    const request: IApiRequest = {
-      url: URL_API.CREATE_CONTACT,
-      method: "POST",
-      data
-    };
-
-    services
-      .api(request)
-      .then(_ => {
-        dispatch(getAllContact());
-        history.replace("/");
+    validation(data)
+      .then(() => {
+        const request: IApiRequest = {
+          url: isNew
+            ? URL_API.CREATE_CONTACT
+            : URL_API.UPDATE_CONTACT.replace(":id", id),
+          method: isNew ? "POST" : "PUT",
+          data
+        };
+        services
+          .api(request)
+          .then(_ => {
+            dispatch(getAllContact());
+            history.replace("/");
+          })
+          .catch(_ => {
+            dispatch(setError(DEFAULT_ERROR));
+          });
       })
-      .catch(_ => {
-        dispatch(setError(DEFAULT_ERROR));
+      .catch(error => {
+        dispatch(setErrorValidation(error));
       });
   };
 }
 
 export function deleteContact(
-  id: string
+  id: string,
+  history: History
 ): ThunkAction<void, IAppState, {}, TAllAction> {
   return dispatch => {
     const request: IApiRequest = {
@@ -68,6 +99,7 @@ export function deleteContact(
       .then(resp => {
         if (resp && resp.data) {
           dispatch(getAllContact());
+          history.replace("/");
         }
         throw new Error();
       })
@@ -98,7 +130,7 @@ export function getContact(
         dispatch(setError(DEFAULT_ERROR));
       })
       .finally(() => {
-        dispatch(setLoading(true));
+        dispatch(setLoading(false));
       });
   };
 }
@@ -126,3 +158,26 @@ export function getAllContact(): ThunkAction<void, IAppState, {}, TAllAction> {
       });
   };
 }
+
+export const validation = (inputs: IContactDetail) => {
+  return new Promise((resolve, reject) => {
+    const error: IErrorValidation = {
+      firstName: validate.emptyString(inputs.firstName),
+      lastName: validate.emptyString(inputs.lastName),
+      age: validate.minNumber(1, inputs.age),
+      photo: validate.emptyStringAndUrl(inputs.photo)
+    };
+
+    Object.keys(error).forEach(key => {
+      if (!(error as any)[key]) {
+        delete (error as any)[key];
+      }
+    });
+
+    if (Object.keys(error).length > 0) {
+      reject(error);
+    } else {
+      resolve();
+    }
+  });
+};
