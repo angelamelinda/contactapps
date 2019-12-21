@@ -1,11 +1,11 @@
-import React, { PureComponent } from "react";
+import React, { PureComponent, ChangeEvent } from "react";
 import { IContactDetail } from "../../interfaces";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { IAppState } from "../../interfaces/state";
 import { HeaderTitleWrapper, HeaderTitle, Row, Col } from "../../styled/App";
 import { FormContactSaveButton, FormContactDeleteButton } from "./styled";
-import { getContact } from "../../redux/actions/contact";
+import { getContact, setForm } from "../../redux/actions/contact";
 
 interface IFormContactRoute {
   id: string;
@@ -14,6 +14,7 @@ interface IFormContact extends RouteComponentProps<IFormContactRoute> {
   formContact: IContactDetail;
   state: IAppState;
   getContact: (id: string) => void;
+  setForm: (key: string, value: string | number) => void;
 }
 
 class FormContact extends PureComponent<IFormContact> {
@@ -34,6 +35,13 @@ class FormContact extends PureComponent<IFormContact> {
   isNewCampaign = () => {
     const { location } = this.props;
     return location.pathname.endsWith("/new");
+  };
+
+  handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { setForm } = this.props;
+    const name = e.target.name;
+    const value = e.target.value;
+    setForm(name, value);
   };
 
   renderButton = () => {
@@ -74,6 +82,8 @@ class FormContact extends PureComponent<IFormContact> {
             className="w-100"
             placeholder="First Name"
             value={firstName}
+            name="firstName"
+            onChange={this.handleChange}
           />
         </Col>
         <Col>
@@ -81,19 +91,30 @@ class FormContact extends PureComponent<IFormContact> {
             type="text"
             className="w-100"
             placeholder="Last Name"
+            name="lastName"
             value={lastName}
+            onChange={this.handleChange}
           />
         </Col>
         <div className="w-100"></div>
         <Col>
-          <input type="text" className="w-100" placeholder="Age" value={age} />
+          <input
+            type="text"
+            className="w-100"
+            placeholder="Age"
+            value={age}
+            name="age"
+            onChange={this.handleChange}
+          />
         </Col>
         <Col>
           <input
             type="text"
             className="w-100"
+            name="photo"
             placeholder="Photo"
             value={photo}
+            onChange={this.handleChange}
           />
         </Col>
         <div className="w-100"></div>
@@ -117,7 +138,8 @@ class FormContact extends PureComponent<IFormContact> {
 const mapStateToProps = (state: IAppState) => ({ state });
 
 const mapDispatchToProps = {
-  getContact
+  getContact,
+  setForm
 };
 
 export default connect(

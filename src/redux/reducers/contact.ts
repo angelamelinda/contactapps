@@ -72,6 +72,7 @@ function contactReducer(
 
     case E_CONTACT_ACTION.CONTACT_SET_FORM:
       const { key, value } = action.payload as IContactSetForm;
+      console.log(key, value);
       return { ...state, contactForm: { ...state.contactForm, [key]: value } };
   }
   return state;

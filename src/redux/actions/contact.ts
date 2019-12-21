@@ -24,6 +24,13 @@ export function setContact(contact: IContactDetail): IContactAction {
   };
 }
 
+export function setForm(key: string, value: number | string): IContactAction {
+  return {
+    type: E_CONTACT_ACTION.CONTACT_SET_FORM,
+    payload: { key, value }
+  };
+}
+
 export function getContact(
   id: string
 ): ThunkAction<void, IAppState, {}, TAllAction> {
