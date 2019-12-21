@@ -17,7 +17,7 @@ const INITIAL_STATE: IContactState = {
     firstName: "",
     lastName: "",
     age: 0,
-    photo: "N/A"
+    photo: ""
   }
 };
 

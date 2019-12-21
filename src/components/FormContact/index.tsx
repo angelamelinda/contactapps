@@ -5,7 +5,13 @@ import { connect } from "react-redux";
 import { IAppState } from "../../interfaces/state";
 import { HeaderTitleWrapper, HeaderTitle, Row, Col } from "../../styled/App";
 import { FormContactSaveButton, FormContactDeleteButton } from "./styled";
-import { getContact, setForm } from "../../redux/actions/contact";
+import {
+  getContact,
+  setForm,
+  deleteContact,
+  createContact
+} from "../../redux/actions/contact";
+import { History } from "history";
 
 interface IFormContactRoute {
   id: string;
@@ -15,6 +21,8 @@ interface IFormContact extends RouteComponentProps<IFormContactRoute> {
   state: IAppState;
   getContact: (id: string) => void;
   setForm: (key: string, value: string | number) => void;
+  deleteContact: (id: string) => void;
+  createContact: (data: IContactDetail, history: History) => void;
 }
 
 class FormContact extends PureComponent<IFormContact> {
@@ -44,12 +52,38 @@ class FormContact extends PureComponent<IFormContact> {
     setForm(name, value);
   };
 
+  handleDelete = () => {
+    const { deleteContact } = this.props;
+    deleteContact(this.contactId);
+  };
+
+  handleSave = () => {
+    const { state, createContact, history } = this.props;
+    const {
+      firstName,
+      lastName,
+      age,
+      photo
+    } = state.contactReducer.contactForm;
+    const data: IContactDetail = {
+      firstName,
+      lastName,
+      age,
+      photo
+    };
+    if (this.isNewCampaign()) {
+      createContact(data, history);
+    }
+  };
+
   renderButton = () => {
     if (this.isNewCampaign()) {
       return (
         <Row>
           <Col>
-            <FormContactSaveButton>Save</FormContactSaveButton>
+            <FormContactSaveButton onClick={this.handleSave}>
+              Save
+            </FormContactSaveButton>
           </Col>
         </Row>
       );
@@ -58,7 +92,9 @@ class FormContact extends PureComponent<IFormContact> {
     return (
       <Row>
         <Col>
-          <FormContactDeleteButton>Delete</FormContactDeleteButton>
+          <FormContactDeleteButton onClick={this.handleDelete}>
+            Delete
+          </FormContactDeleteButton>
         </Col>
         <Col>
           <FormContactSaveButton>Save</FormContactSaveButton>
@@ -99,7 +135,7 @@ class FormContact extends PureComponent<IFormContact> {
         <div className="w-100"></div>
         <Col>
           <input
-            type="text"
+            type="number"
             className="w-100"
             placeholder="Age"
             value={age}
@@ -139,7 +175,9 @@ const mapStateToProps = (state: IAppState) => ({ state });
 
 const mapDispatchToProps = {
   getContact,
-  setForm
+  setForm,
+  deleteContact,
+  createContact
 };
 
 export default connect(

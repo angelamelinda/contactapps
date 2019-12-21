@@ -9,6 +9,7 @@ import {
   E_CONTACT_ACTION
 } from "../../interfaces/action";
 import { setError, setLoading } from "./common";
+import { History } from "history";
 
 export function setAllGetData(contacts: IContactDetail[]): IContactAction {
   return {
@@ -28,6 +29,51 @@ export function setForm(key: string, value: number | string): IContactAction {
   return {
     type: E_CONTACT_ACTION.CONTACT_SET_FORM,
     payload: { key, value }
+  };
+}
+
+export function createContact(
+  data: IContactDetail,
+  history: History
+): ThunkAction<void, IAppState, {}, TAllAction> {
+  return dispatch => {
+    const request: IApiRequest = {
+      url: URL_API.CREATE_CONTACT,
+      method: "POST",
+      data
+    };
+
+    services
+      .api(request)
+      .then(_ => {
+        dispatch(getAllContact());
+        history.replace("/");
+      })
+      .catch(_ => {
+        dispatch(setError(DEFAULT_ERROR));
+      });
+  };
+}
+
+export function deleteContact(
+  id: string
+): ThunkAction<void, IAppState, {}, TAllAction> {
+  return dispatch => {
+    const request: IApiRequest = {
+      url: URL_API.DELETE_CONTACT.replace(":id", id),
+      method: "DELETE"
+    };
+    services
+      .api(request)
+      .then(resp => {
+        if (resp && resp.data) {
+          dispatch(getAllContact());
+        }
+        throw new Error();
+      })
+      .catch(_ => {
+        dispatch(setError(DEFAULT_ERROR));
+      });
   };
 }
 
