@@ -26,11 +26,11 @@ import {
   resetContact
 } from "../../redux/actions/contact";
 import { History } from "history";
-import { LoadingWrapper } from "../Loading/styled";
-import Loading from "../Loading";
-import InputWithValidation from "../InputWithValidation";
+import { LoadingWrapper } from "../../components/Loading/styled";
+import Loading from "../../components/Loading";
+import InputWithValidation from "../../components/InputWithValidation";
 import { helpers } from "../../helpers";
-import BackButton from "../BackButton";
+import BackButton from "../../components/BackButton";
 import { COLOR } from "../../constants";
 
 interface IFormContactRoute {
@@ -202,7 +202,7 @@ class FormContact extends PureComponent<IFormContact> {
           <HeaderTitleWrapper>
             <HeaderTitle>
               <HeaderBackButton onClick={this.handleBack}>
-                <BackButton color={COLOR.PRIMARY} width={"18"} height={"18"} />
+                <BackButton color={COLOR.PRIMARY} width={"20"} height={"20"} />
               </HeaderBackButton>
               Form Contact
             </HeaderTitle>

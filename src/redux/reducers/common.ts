@@ -2,13 +2,15 @@ import {
   E_COMMON_ACTION,
   ICommonAction,
   ICommonSetLoading,
-  ICommonSetError
+  ICommonSetError,
+  ICommonSetToast
 } from "../../interfaces/action";
 import { ICommonState } from "../../interfaces/state";
 
 const INITIAL_STATE: ICommonState = {
   isLoading: false,
-  error: null
+  error: null,
+  toast: null
 };
 
 function commonReducer(
@@ -22,6 +24,9 @@ function commonReducer(
     case E_COMMON_ACTION.COMMON_SET_ERROR:
       const { message } = action.payload as ICommonSetError;
       return { ...state, error: { message } };
+    case E_COMMON_ACTION.COMMON_SET_TOAST:
+      const { message: toastMessage } = action.payload as ICommonSetToast;
+      return { ...state, toast: toastMessage };
   }
   return state;
 }

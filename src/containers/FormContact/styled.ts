@@ -31,8 +31,9 @@ export const Form = styled.div`
 `;
 
 export const FormImage = styled.div`
-  width: 200px;
-  height: 200px;
+  width: 100%;
+  max-width: 300px;
+  height: 300px;
   overflow: hidden;
   background: #${COLOR.GREY};
   margin: 0 auto 20px;
@@ -40,5 +41,6 @@ export const FormImage = styled.div`
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: top;
   }
 `;

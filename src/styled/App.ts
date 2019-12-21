@@ -56,6 +56,7 @@ export const HeaderAddContactAction = styled.div`
   line-height: 1;
   color: #${COLOR.PRIMARY};
   cursor: pointer;
+  border-radius: 100%;
 `;
 
 export const HeaderBackButton = styled.div`
@@ -79,4 +80,17 @@ export const Col = styled.div`
   width: 100%;
   padding-right: 10px;
   padding-left: 10px;
+`;
+
+export const Toast = styled.div`
+  position: fixed;
+  bottom: 40px;
+  text-align: center;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.54);
+  padding: 10px 20px;
+  border-radius: 20px;
+  color: #${COLOR.WHITE};
+  transition: all 0.3s ease;
 `;

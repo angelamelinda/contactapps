@@ -1,10 +1,18 @@
-import React from "react";
+import React, { FC } from "react";
 import { Switch, Route } from "react-router-dom";
 import ListContact from "./containers/ListContact";
-import { Container, GlobalStyle } from "./styled/App";
-import FormContact from "./components/FormContact";
+import FormContact from "./containers/FormContact";
+import { Container, GlobalStyle, Toast } from "./styled/App";
+import { IAppState } from "./interfaces/state";
+import { connect } from "react-redux";
 
-const App: React.FC = () => {
+interface IApp {
+  state: IAppState;
+}
+
+const App: FC<IApp> = (app: IApp) => {
+  const { toast } = app.state.commonReducer;
+  console.log(app);
   return (
     <Container>
       <GlobalStyle />
@@ -13,8 +21,16 @@ const App: React.FC = () => {
         <Route exact path="/new" component={FormContact}></Route>
         <Route exact path="/contact/:id" component={FormContact}></Route>
       </Switch>
+      {toast && <Toast> {toast}</Toast>}
     </Container>
   );
 };
 
-export default App;
+const mapStateToProps = (state: IAppState) => ({ state });
+
+const mapDispatchToProps = {};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);

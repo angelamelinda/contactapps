@@ -12,7 +12,7 @@ import {
   IContactAction,
   E_CONTACT_ACTION
 } from "../../interfaces/action";
-import { setError, setLoading } from "./common";
+import { setError, setLoading, setToast } from "./common";
 import { History } from "history";
 import { validate } from "../../helpers/validate";
 
@@ -71,9 +71,19 @@ export function validateContact(
         };
         services
           .api(request)
-          .then(_ => {
+          .then(resp => {
+            const message =
+              resp && resp.error
+                ? "Sorry, something went wrong!"
+                : resp.message;
+
             dispatch(getAllContact());
             history.replace("/");
+
+            dispatch(setToast(message));
+            setTimeout(() => {
+              dispatch(setToast(null));
+            }, 5000);
           })
           .catch(_ => {
             dispatch(setError(DEFAULT_ERROR));
@@ -101,9 +111,16 @@ export function deleteContact(
           dispatch(getAllContact());
           history.replace("/");
         }
+
+        if (resp && resp.error) {
+          dispatch(setToast("Sorry, something went wrong!"));
+          setTimeout(() => {
+            dispatch(setToast(null));
+          }, 5000);
+        }
         throw new Error();
       })
-      .catch(_ => {
+      .catch(error => {
         dispatch(setError(DEFAULT_ERROR));
       });
   };

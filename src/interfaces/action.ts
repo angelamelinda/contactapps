@@ -39,7 +39,8 @@ export interface IContactAction extends Action<E_CONTACT_ACTION> {
 
 export enum E_COMMON_ACTION {
   COMMON_SET_LOADING = "COMMON_SET_LOADING",
-  COMMON_SET_ERROR = "COMMON_SET_ERROR"
+  COMMON_SET_ERROR = "COMMON_SET_ERROR",
+  COMMON_SET_TOAST = "COMMON_SET_TOAST"
 }
 
 export interface IResetContact {}
@@ -52,7 +53,14 @@ export interface ICommonSetError {
   message: string;
 }
 
-export type TCommonAction = ICommonSetLoading | ICommonSetError;
+export interface ICommonSetToast {
+  message: string | null;
+}
+
+export type TCommonAction =
+  | ICommonSetLoading
+  | ICommonSetError
+  | ICommonSetToast;
 
 export interface ICommonAction extends Action<E_COMMON_ACTION> {
   payload: TCommonAction;
