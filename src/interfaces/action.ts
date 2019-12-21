@@ -2,11 +2,16 @@ import { Action } from "redux";
 import { IContact, IContactDetail } from ".";
 
 export enum E_CONTACT_ACTION {
+  CONTACT_SET_CONTACT = "CONTACT_SET_CONTACT",
   CONTACT_SET_ALL_CONTACT = "CONTACT_SET_ALL_CONTACT",
   CONTACT_ADD_NEW_CONTACT = "CONTACT_ADD_NEW_CONTACT",
   CONTACT_UPDATE_CONTACT = "CONTACT_UPDATE_CONTACT",
   CONTACT_DELETE_CONTACT = "CONTACT_DELETE_CONTACT",
   CONTACT_SET_FORM = "CONTACT_SET_FORM"
+}
+
+export interface IContactSetContact {
+  contact: IContactDetail;
 }
 
 export interface IContactSetAllContact {
@@ -29,6 +34,7 @@ export interface IContactSetForm {
 }
 
 export type TContactAction =
+  | IContactSetContact
   | IContactSetAllContact
   | IContactAddNewContact
   | IContactUpdateContact

@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { IAppState } from "../../interfaces/state";
 import { HeaderTitleWrapper, HeaderTitle, Row, Col } from "../../styled/App";
 import { FormContactSaveButton, FormContactDeleteButton } from "./styled";
+import { getContact } from "../../redux/actions/contact";
 
 interface IFormContactRoute {
   id: string;
@@ -12,6 +13,7 @@ interface IFormContactRoute {
 interface IFormContact extends RouteComponentProps<IFormContactRoute> {
   formContact: IContactDetail;
   state: IAppState;
+  getContact: (id: string) => void;
 }
 
 class FormContact extends PureComponent<IFormContact> {
@@ -22,7 +24,12 @@ class FormContact extends PureComponent<IFormContact> {
     this.contactId = props.match.params.id;
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    if (!this.isNewCampaign()) {
+      const { getContact } = this.props;
+      getContact(this.contactId);
+    }
+  }
 
   isNewCampaign = () => {
     const { location } = this.props;
@@ -53,7 +60,12 @@ class FormContact extends PureComponent<IFormContact> {
   };
 
   renderForm = () => {
-    const { firstName, lastName } = this.props.state.contactReducer.contactForm;
+    const {
+      firstName,
+      lastName,
+      age,
+      photo
+    } = this.props.state.contactReducer.contactForm;
     return (
       <Row>
         <Col>
@@ -73,12 +85,23 @@ class FormContact extends PureComponent<IFormContact> {
           />
         </Col>
         <div className="w-100"></div>
+        <Col>
+          <input type="text" className="w-100" placeholder="Age" value={age} />
+        </Col>
+        <Col>
+          <input
+            type="text"
+            className="w-100"
+            placeholder="Photo"
+            value={photo}
+          />
+        </Col>
+        <div className="w-100"></div>
       </Row>
     );
   };
 
   render() {
-    console.log("hehe");
     return (
       <>
         <HeaderTitleWrapper>
@@ -93,7 +116,9 @@ class FormContact extends PureComponent<IFormContact> {
 
 const mapStateToProps = (state: IAppState) => ({ state });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  getContact
+};
 
 export default connect(
   mapStateToProps,

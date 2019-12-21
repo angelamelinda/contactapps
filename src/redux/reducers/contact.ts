@@ -6,7 +6,8 @@ import {
   IContactSetAllContact,
   IContactDeleteContact,
   IContactUpdateContact,
-  IContactSetForm
+  IContactSetForm,
+  IContactSetContact
 } from "../../interfaces/action";
 
 const INITIAL_STATE: IContactState = {
@@ -28,6 +29,10 @@ function contactReducer(
     case E_CONTACT_ACTION.CONTACT_SET_ALL_CONTACT:
       const { contacts } = action.payload as IContactSetAllContact;
       return { ...state, contacts };
+
+    case E_CONTACT_ACTION.CONTACT_SET_CONTACT:
+      const { contact } = action.payload as IContactSetContact;
+      return { ...state, contactForm: contact };
 
     case E_CONTACT_ACTION.CONTACT_ADD_NEW_CONTACT:
       const { contact: newContact } = action.payload as IContactAddNewContact;
