@@ -13,7 +13,7 @@ const INITIAL_STATE = {
   errorValidation: null
 };
 
-const contacts = [
+const CONTACTS = [
   {
     id: "b3abd640-c92b-11e8-b02f-cbfa15db428b",
     firstName: "Luke",
@@ -31,6 +31,25 @@ describe("contact reducer", () => {
         payload: {}
       })
     ).toEqual(INITIAL_STATE);
+  });
+
+  it(`should return contacts with CONTACTS when contacts is ${CONTACTS}`, () => {
+    expect(
+      contactReducer(INITIAL_STATE, {
+        type: E_CONTACT_ACTION.CONTACT_SET_ALL_CONTACT,
+        payload: { contacts: CONTACTS }
+      })
+    ).toEqual({
+      contacts: CONTACTS,
+      contactForm: {
+        id: "",
+        firstName: "",
+        lastName: "",
+        age: 1,
+        photo: ""
+      },
+      errorValidation: null
+    });
   });
 
   it(`should return contacts is null when contacts is null`, () => {
