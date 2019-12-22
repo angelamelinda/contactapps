@@ -38,8 +38,8 @@ import { setError, setConnectivity } from "../../redux/actions/common";
 interface IFormContactRoute {
   id: string;
 }
+
 interface IFormContact extends RouteComponentProps<IFormContactRoute> {
-  formContact: IContactDetail;
   state: IAppState;
   getContact: (id: string) => void;
   setForm: (key: string, value: string | number) => void;
