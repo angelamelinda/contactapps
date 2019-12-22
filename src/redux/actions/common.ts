@@ -14,9 +14,16 @@ export function setToast(message: string | null): ICommonAction {
   };
 }
 
-export function setError(message: string): ICommonAction {
+export function setError(error: { message: string } | null): ICommonAction {
   return {
     type: E_COMMON_ACTION.COMMON_SET_ERROR,
-    payload: { message }
+    payload: { error }
+  };
+}
+
+export function setConnectivity(isOnline: boolean) {
+  return {
+    type: E_COMMON_ACTION.COMMON_SET_CONNECTIVITY,
+    payload: { isOnline }
   };
 }

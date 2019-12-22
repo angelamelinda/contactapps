@@ -9,27 +9,57 @@ import { Link } from "react-router-dom";
 import {
   HeaderTitleWrapper,
   HeaderTitle,
-  HeaderAddContactAction
+  HeaderAddContactAction,
+  ErrorPage
 } from "../../styled/App";
+import { setError, setConnectivity } from "../../redux/actions/common";
+import { ERROR } from "../../constants";
 
 interface IListContact {
   state: IAppState;
   getAllContact: () => void;
   resetContact: () => void;
+  setError: (error: { message: string } | null) => void;
+  setConnectivity: (isOnline: boolean) => void;
 }
 
 class ListContact extends PureComponent<IListContact> {
   componentDidMount() {
-    const { getAllContact, resetContact } = this.props;
+    const { getAllContact, resetContact, setConnectivity } = this.props;
     resetContact();
     getAllContact();
+
+    window.addEventListener("online", () => setConnectivity(true));
+    window.addEventListener("offline", () => setConnectivity(false));
+  }
+
+  componentDidUpdate(prevProps: IListContact) {
+    const { getAllContact, state, setError, resetContact } = this.props;
+    const { isOnline } = state.commonReducer;
+    if (!prevProps.state.commonReducer.isOnline && isOnline) {
+      setError(null);
+      resetContact();
+      getAllContact();
+    } else if (prevProps.state.commonReducer.isOnline && !isOnline) {
+      setError({ message: ERROR.NO_INTERNET });
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("online", () => setConnectivity(true));
+    window.removeEventListener("offline", () => setConnectivity(false));
   }
 
   render() {
     const { error } = this.props.state.commonReducer;
     const { contacts } = this.props.state.contactReducer;
 
+    if (error && error.message !== "") {
+      return <ErrorPage>{error.message}</ErrorPage>;
+    }
+
     if (contacts) {
+      console.log("hehehhe");
       return (
         <>
           <HeaderTitleWrapper>
@@ -46,9 +76,6 @@ class ListContact extends PureComponent<IListContact> {
       );
     }
 
-    if (error) {
-    }
-
     return (
       <LoadingWrapper>
         <Loading />
@@ -61,7 +88,9 @@ const mapStateToProps = (state: IAppState) => ({ state });
 
 const mapDispatchToProps = {
   getAllContact,
-  resetContact
+  resetContact,
+  setError,
+  setConnectivity
 };
 
 export default connect(

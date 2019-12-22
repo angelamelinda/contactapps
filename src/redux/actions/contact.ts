@@ -1,4 +1,4 @@
-import { URL_API, DEFAULT_ERROR } from "../../constants";
+import { URL_API, ERROR } from "../../constants";
 import {
   IApiRequest,
   IContactDetail,
@@ -86,7 +86,8 @@ export function validateContact(
             }, 5000);
           })
           .catch(_ => {
-            dispatch(setError(DEFAULT_ERROR));
+            console.log("hereeeeee");
+            dispatch(setError({ message: ERROR.COMMON }));
           });
       })
       .catch(error => {
@@ -117,11 +118,12 @@ export function deleteContact(
           setTimeout(() => {
             dispatch(setToast(null));
           }, 5000);
+        } else {
+          throw new Error();
         }
-        throw new Error();
       })
-      .catch(error => {
-        dispatch(setError(DEFAULT_ERROR));
+      .catch(_ => {
+        dispatch(setError({ message: ERROR.COMMON }));
       });
   };
 }
@@ -140,11 +142,12 @@ export function getContact(
       .then(resp => {
         if (resp && resp.data) {
           dispatch(setContact(resp.data as IContactDetail));
+        } else {
+          throw new Error();
         }
-        throw new Error();
       })
       .catch(_ => {
-        dispatch(setError(DEFAULT_ERROR));
+        dispatch(setError({ message: ERROR.COMMON }));
       })
       .finally(() => {
         dispatch(setLoading(false));
@@ -164,11 +167,12 @@ export function getAllContact(): ThunkAction<void, IAppState, {}, TAllAction> {
       .then(resp => {
         if (resp && resp.data) {
           dispatch(setAllGetData(resp.data as IContactDetail[]));
+        } else {
+          throw new Error();
         }
-        throw new Error();
       })
       .catch(_ => {
-        dispatch(setError(DEFAULT_ERROR));
+        dispatch(setError({ message: ERROR.COMMON }));
       })
       .finally(() => {
         dispatch(setLoading(true));

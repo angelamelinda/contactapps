@@ -21,4 +21,7 @@ export const COLOR = {
   GREEEN: "6bcc45"
 };
 
-export const DEFAULT_ERROR = "Sorry, something went wrong!";
+export const ERROR = {
+  NO_INTERNET: "No Internet Connection!",
+  COMMON: "Sorry, something went wrong!"
+};

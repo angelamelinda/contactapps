@@ -16,6 +16,7 @@ export interface ICommonState {
   isLoading: boolean;
   error: IError | null;
   toast: string | null;
+  isOnline: boolean;
 }
 
 export interface IAppState {

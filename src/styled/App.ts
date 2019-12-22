@@ -94,3 +94,10 @@ export const Toast = styled.div`
   color: #${COLOR.WHITE};
   transition: all 0.3s ease;
 `;
+
+export const ErrorPage = styled.div`
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;

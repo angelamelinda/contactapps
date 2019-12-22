@@ -8,7 +8,8 @@ import {
   HeaderTitle,
   Row,
   Col,
-  HeaderBackButton
+  HeaderBackButton,
+  ErrorPage
 } from "../../styled/App";
 import {
   FormContactSaveButton,
@@ -31,7 +32,8 @@ import Loading from "../../components/Loading";
 import InputWithValidation from "../../components/InputWithValidation";
 import { helpers } from "../../helpers";
 import BackButton from "../../components/BackButton";
-import { COLOR } from "../../constants";
+import { COLOR, ERROR } from "../../constants";
+import { setError, setConnectivity } from "../../redux/actions/common";
 
 interface IFormContactRoute {
   id: string;
@@ -50,6 +52,8 @@ interface IFormContact extends RouteComponentProps<IFormContactRoute> {
   ) => void;
   setContact: (contact: IContactDetail) => void;
   resetContact: () => void;
+  setError: (error: { message: string } | null) => void;
+  setConnectivity: (isOnline: boolean) => void;
 }
 
 class FormContact extends PureComponent<IFormContact> {
@@ -70,6 +74,26 @@ class FormContact extends PureComponent<IFormContact> {
       const { getContact } = this.props;
       getContact(this.contactId);
     }
+
+    window.addEventListener("online", () => setConnectivity(true));
+    window.addEventListener("offline", () => setConnectivity(false));
+  }
+
+  componentDidUpdate(prevProps: IFormContact) {
+    const { getContact, state, setError, resetContact } = this.props;
+    const { isOnline } = state.commonReducer;
+    if (!prevProps.state.commonReducer.isOnline && isOnline) {
+      setError(null);
+      resetContact();
+      getContact(this.contactId);
+    } else if (prevProps.state.commonReducer.isOnline && !isOnline) {
+      setError({ message: ERROR.NO_INTERNET });
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("online", () => setConnectivity(true));
+    window.removeEventListener("offline", () => setConnectivity(false));
   }
 
   isNewContact = () => {
@@ -92,6 +116,16 @@ class FormContact extends PureComponent<IFormContact> {
   handleDelete = () => {
     const { deleteContact, history } = this.props;
     deleteContact(this.contactId, history);
+  };
+
+  handleOnline = () => {
+    const { setError, getContact } = this.props;
+    if (!navigator.onLine) {
+      setError({ message: ERROR.NO_INTERNET });
+    } else {
+      getContact(this.contactId);
+      setError(null);
+    }
   };
 
   handleSave = () => {
@@ -195,7 +229,11 @@ class FormContact extends PureComponent<IFormContact> {
   };
 
   render() {
-    const { isLoading } = this.props.state.commonReducer;
+    const { isLoading, error } = this.props.state.commonReducer;
+    if (error) {
+      return <ErrorPage>{error.message}</ErrorPage>;
+    }
+
     if (this.isNew || !isLoading) {
       return (
         <>
@@ -229,7 +267,9 @@ const mapDispatchToProps = {
   deleteContact,
   validateContact,
   setContact,
-  resetContact
+  resetContact,
+  setError,
+  setConnectivity
 };
 
 export default connect(

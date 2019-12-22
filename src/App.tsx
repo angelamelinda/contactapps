@@ -12,7 +12,6 @@ interface IApp {
 
 const App: FC<IApp> = (app: IApp) => {
   const { toast } = app.state.commonReducer;
-  console.log(app);
   return (
     <Container>
       <GlobalStyle />
