@@ -107,10 +107,8 @@ export function deleteContact(
     services
       .api(request)
       .then(resp => {
-        if (resp && resp.data) {
-          dispatch(getAllContact());
-          history.replace("/");
-        }
+        dispatch(getAllContact());
+        history.replace("/");
 
         const message =
           resp && resp.error ? "Sorry, something went wrong!" : resp.message;
