@@ -13,7 +13,7 @@ import App from "./App";
 import { ERROR } from "./constants";
 
 function renderWithRedux(
-  ui: any,
+  ui: JSX.Element,
   {
     initialState = {},
     store = createStore(RootReducer, applyMiddleware(thunkMiddleware))

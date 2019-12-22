@@ -112,14 +112,13 @@ export function deleteContact(
           history.replace("/");
         }
 
-        if (resp && resp.error) {
-          dispatch(setToast("Sorry, something went wrong!"));
-          setTimeout(() => {
-            dispatch(setToast(null));
-          }, 5000);
-        } else {
-          throw new Error();
-        }
+        const message =
+          resp && resp.error ? "Sorry, something went wrong!" : resp.message;
+
+        dispatch(setToast(message));
+        setTimeout(() => {
+          dispatch(setToast(null));
+        }, 5000);
       })
       .catch(_ => {
         dispatch(setError({ message: ERROR.COMMON }));
