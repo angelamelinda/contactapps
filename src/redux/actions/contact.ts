@@ -185,7 +185,7 @@ export const validation = (inputs: IContactDetail) => {
     const error: IErrorValidation = {
       firstName: validate.emptyString(inputs.firstName),
       lastName: validate.emptyString(inputs.lastName),
-      age: validate.minNumber(1, inputs.age),
+      age: validate.minMaxNumber(1, 100, inputs.age),
       photo: validate.emptyStringAndUrl(inputs.photo)
     };
 

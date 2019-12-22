@@ -8,7 +8,10 @@ export const validate = {
 
     return "";
   },
-  minNumber: (min: number, value: number) => {
+  minMaxNumber: (min: number, max: number, value: number) => {
+    if (value > max) {
+      return `Maximimum ${max}`;
+    }
     if (value < min) {
       return `Minimum ${min}`;
     }
