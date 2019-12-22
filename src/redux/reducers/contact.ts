@@ -8,7 +8,7 @@ import {
   IContactSetError
 } from "../../interfaces/action";
 
-const INITIAL_STATE: IContactState = {
+export const INITIAL_STATE: IContactState = {
   contacts: null,
   contactForm: {
     id: "",

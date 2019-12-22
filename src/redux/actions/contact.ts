@@ -86,7 +86,6 @@ export function validateContact(
             }, 5000);
           })
           .catch(_ => {
-            console.log("hereeeeee");
             dispatch(setError({ message: ERROR.COMMON }));
           });
       })

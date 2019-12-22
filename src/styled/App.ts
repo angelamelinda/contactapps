@@ -51,12 +51,13 @@ export const HeaderTitle = styled.div``;
 export const HeaderAddContactAction = styled.div`
   text-align: center;
   border: 1px solid #${COLOR.PRIMARY};
-  height: 30px;
-  width: 30px;
+  height: 20px;
+  width: 20px;
   line-height: 1;
   color: #${COLOR.PRIMARY};
   cursor: pointer;
   border-radius: 100%;
+  font-size: 17px;
 `;
 
 export const HeaderBackButton = styled.div`

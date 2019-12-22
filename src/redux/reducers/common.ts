@@ -8,7 +8,7 @@ import {
 } from "../../interfaces/action";
 import { ICommonState } from "../../interfaces/state";
 
-const INITIAL_STATE: ICommonState = {
+export const INITIAL_STATE: ICommonState = {
   isLoading: false,
   error: null,
   toast: null,

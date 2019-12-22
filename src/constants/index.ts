@@ -22,6 +22,7 @@ export const COLOR = {
 };
 
 export const ERROR = {
+  NOT_FOUND: "404 Not Found",
   NO_INTERNET: "No Internet Connection!",
   COMMON: "Sorry, something went wrong!"
 };

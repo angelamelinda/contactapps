@@ -55,11 +55,10 @@ class ListContact extends PureComponent<IListContact> {
     const { contacts } = this.props.state.contactReducer;
 
     if (error && error.message !== "") {
-      return <ErrorPage>{error.message}</ErrorPage>;
+      return <ErrorPage id="error-page">{error.message}</ErrorPage>;
     }
 
     if (contacts) {
-      console.log("hehehhe");
       return (
         <>
           <HeaderTitleWrapper>
@@ -77,7 +76,7 @@ class ListContact extends PureComponent<IListContact> {
     }
 
     return (
-      <LoadingWrapper>
+      <LoadingWrapper data-testid="loading__container">
         <Loading />
       </LoadingWrapper>
     );

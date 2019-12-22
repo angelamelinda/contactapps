@@ -180,7 +180,7 @@ class FormContact extends PureComponent<IFormContact> {
     const { firstName, lastName, age, photo } = contactForm;
 
     return (
-      <Form>
+      <Form data-testid="contact__form">
         <FormImage>
           {helpers.isUrl(photo) && <img src={photo} alt="" />}
         </FormImage>
@@ -231,7 +231,7 @@ class FormContact extends PureComponent<IFormContact> {
   render() {
     const { isLoading, error } = this.props.state.commonReducer;
     if (error) {
-      return <ErrorPage>{error.message}</ErrorPage>;
+      return <ErrorPage id="error-page">{error.message}</ErrorPage>;
     }
 
     if (this.isNew || !isLoading) {
@@ -252,7 +252,7 @@ class FormContact extends PureComponent<IFormContact> {
     }
 
     return (
-      <LoadingWrapper>
+      <LoadingWrapper data-testid="loading__container">
         <Loading />
       </LoadingWrapper>
     );
